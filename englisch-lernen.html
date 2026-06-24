@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Englisch lernen — 3D-Druck, PC & Coding</title>
+<title>Englisch lernen — 3D-Druck, PC & Coding (Komplett)</title>
 <style>
   :root{
     --bg:#0f1220; --card:#1a1f35; --card2:#222842; --accent:#5b8cff;
@@ -27,7 +27,6 @@
   .modebtn.active{background:var(--card2); border-color:var(--accent);}
   input.search{width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--border);
     background:var(--card); color:var(--txt); font-size:15px; margin-bottom:12px;}
-  /* Flashcard */
   .flash{perspective:1200px; margin:0 auto;}
   .fcard{position:relative; width:100%; min-height:230px; cursor:pointer;
     transform-style:preserve-3d; transition:transform .5s; }
@@ -37,7 +36,7 @@
     text-align:center; border:1px solid var(--border);}
   .front{background:linear-gradient(160deg,var(--card),var(--card2));}
   .back{background:linear-gradient(160deg,#1d2b4a,#243a63); transform:rotateY(180deg);}
-  .big{font-size:30px; font-weight:700; margin:6px 0;}
+  .big{font-size:28px; font-weight:700; margin:6px 0;}
   .ipa{color:var(--accent); font-size:18px; margin:4px 0;}
   .de{font-size:16px; color:var(--txt); margin-top:6px;}
   .hint{color:var(--muted); font-size:12px; margin-top:14px;}
@@ -48,7 +47,6 @@
   .counter{color:var(--muted); font-size:13px; text-align:center; margin-bottom:6px;}
   .speak{margin-top:8px; padding:9px 16px; border-radius:999px; border:1px solid var(--accent);
     background:transparent; color:var(--accent); font-size:14px; cursor:pointer;}
-  /* List */
   .row{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:8px;
     display:flex; justify-content:space-between; align-items:center; gap:10px;}
   .row .en{font-weight:700; font-size:16px;}
@@ -56,12 +54,11 @@
   .row .de2{color:var(--muted); font-size:13px; margin-top:2px;}
   .row .sp{flex:0 0 auto; background:transparent; border:1px solid var(--border); color:var(--accent);
     border-radius:50%; width:40px; height:40px; font-size:18px; cursor:pointer;}
-  /* Quiz */
   .quizq{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; text-align:center;}
   .quizq .q{font-size:14px; color:var(--muted);}
-  .quizq .qword{font-size:26px; font-weight:700; margin:10px 0 18px;}
+  .quizq .qword{font-size:24px; font-weight:700; margin:10px 0 18px;}
   .opt{display:block; width:100%; padding:14px; margin:8px 0; border-radius:12px; background:var(--card2);
-    border:1px solid var(--border); color:var(--txt); font-size:16px; cursor:pointer; text-align:left;}
+    border:1px solid var(--border); color:var(--txt); font-size:15px; cursor:pointer; text-align:left;}
   .opt.correct{background:rgba(54,211,153,.2); border-color:var(--ok);}
   .opt.wrong{background:rgba(255,92,122,.2); border-color:var(--bad);}
   .score{text-align:center; color:var(--muted); margin:12px 0;}
@@ -70,8 +67,8 @@
 </head>
 <body>
 <header>
-  <h1>🇬🇧 Englisch lernen für Technik</h1>
-  <div class="sub">3D-Druck · PC · Programmieren — mit Aussprache 🔊</div>
+  <h1>🇬🇧 Englisch für Technik — Komplett</h1>
+  <div class="sub" id="totalSub">3D-Druck · PC · Programmieren — mit Aussprache 🔊</div>
 </header>
 
 <div class="tabs" id="tabs"></div>
@@ -83,7 +80,6 @@
     <button class="modebtn" data-mode="quiz">🎯 Quiz</button>
   </div>
 
-  <!-- CARDS -->
   <div id="cards">
     <div class="counter" id="counter"></div>
     <div class="flash">
@@ -106,13 +102,11 @@
     </div>
   </div>
 
-  <!-- LIST -->
   <div id="list" style="display:none">
     <input class="search" id="search" placeholder="🔍 Suchen (deutsch oder englisch)...">
     <div id="listBody"></div>
   </div>
 
-  <!-- QUIZ -->
   <div id="quiz" style="display:none">
     <div class="score" id="quizScore"></div>
     <div class="quizq">
@@ -124,178 +118,487 @@
   </div>
 </div>
 
-<div class="footer">Tipp: Auf dem iPhone „Zum Home-Bildschirm" hinzufügen — dann ist es wie eine App.<br>Aussprache braucht Ton an.</div>
+<div class="footer">Tipp: Auf dem iPhone „Teilen → Zum Home-Bildschirm" — dann ist es wie eine App.<br>Aussprache braucht Ton an.</div>
 
 <script>
 const DATA = {
  "3D-Druck": [
   ["slicer","sslai-ser","Programm, das das Modell in Druckschichten zerlegt (Cura, PrusaSlicer)"],
   ["to slice","tu sslais","slicen — das Modell in Schichten schneiden"],
+  ["to print","tu print","drucken"],
+  ["print job","print dschobb","Druckauftrag"],
+  ["failed print / fail","fejld print","misslungener Druck"],
   ["layer","lä-er","Schicht"],
   ["layer height","lä-er hait","Schichthöhe (z. B. 0,2 mm)"],
   ["first layer","först lä-er","erste Schicht (wichtigste fürs Gelingen)"],
+  ["top layer","topp lä-er","oberste Schicht"],
+  ["bottom layer","bo-tom lä-er","unterste Schicht"],
+  ["solid layer","ssollid lä-er","volle (geschlossene) Schicht"],
   ["infill","in-fill","Füllung im Inneren (z. B. 20 %)"],
+  ["infill pattern","in-fill pä-tern","Füllmuster (z. B. Gyroid, Waben)"],
+  ["gyroid","dschai-roid","wellenförmiges Füllmuster"],
+  ["honeycomb","ha-ni-kohm","Waben-Füllmuster"],
   ["wall / perimeter","woll / pe-ri-me-ter","Außenwand des Drucks"],
+  ["shell","schell","Außenhülle des Drucks"],
   ["nozzle","no-ssel","Düse"],
+  ["nozzle size","no-ssel ssais","Düsendurchmesser (z. B. 0,4 mm)"],
+  ["hardened nozzle","har-dend no-ssel","gehärtete Düse (für abrasives Material)"],
   ["hotend","hot-end","das heiße Ende, schmilzt das Filament"],
+  ["heatbreak","hiit-brejk","Trennstück zwischen heiß und kalt"],
+  ["heat creep","hiit kriip","Hitze kriecht hoch → Verstopfung"],
+  ["thermal runaway","thör-mal rann-a-wej","Hitze-Schutzabschaltung"],
   ["extruder","eks-tru-der","Vorschub, der das Filament schiebt"],
+  ["direct drive","di-rekt draiw","Extruder direkt am Druckkopf"],
+  ["bowden tube","bau-den tjuub","Schlauch vom Extruder zur Düse"],
+  ["PTFE tube","pi-ti-ef-i tjuub","Teflon-Schlauch für das Filament"],
   ["filament","fi-la-ment","der Druck-Faden (PLA, PETG, ABS, TPU)"],
   ["spool","sspuul","die Filament-Rolle"],
+  ["to swap filament","tu ssuopp fi-la-ment","Filament wechseln"],
+  ["runout sensor","rann-aut ssen-sor","Sensor: Filament zu Ende"],
+  ["wet filament / moisture","wett fi-la-ment","feuchtes Filament (druckt schlecht)"],
+  ["to dry","tu drai","Filament trocknen"],
+  ["dry box","drai boks","Trockenbox fürs Filament"],
+  ["abrasive","ab-rej-ssiw","schmirgelndes Filament (nutzt Düse ab)"],
   ["print bed","print bett","Druckbett"],
+  ["build plate","bild plejt","Druckplatte"],
+  ["PEI sheet","pi-i-ai schiit","beschichtete Federstahl-Platte"],
   ["bed leveling","bett le-we-ling","Bett ausrichten / einstellen"],
-  ["to level","tu le-wel","das Bett gerade / eben machen"],
-  ["to home","tu hoom","Druckkopf in die Nullposition fahren"],
+  ["to level / to tram","tu le-wel","das Bett gerade / eben machen"],
+  ["bed mesh / mesh","bett mesch","Vermessungs-Gitter des Betts"],
+  ["ABL (auto bed leveling)","ej-bi-ell","automatische Bett-Vermessung"],
+  ["probe / BLTouch","prohb","Sensor zum Bett-Abtasten"],
+  ["z-offset","ssett off-sett","Abstand Düse ↔ Bett"],
+  ["to home / homing","tu hoom","Druckkopf in die Nullposition fahren"],
   ["endstop","end-stopp","Endschalter"],
   ["firmware","förm-wär","die Steuer-Software des Druckers (Marlin, Klipper)"],
   ["to flash","tu fläsch","Firmware aufspielen"],
   ["gcode","dschi-kohd","die Maschinenbefehle, die der Drucker abarbeitet"],
   ["retraction","ri-träk-schn","Filament zurückziehen (gegen Fäden)"],
   ["flow rate","floh rejt","Materialfluss"],
+  ["over-extrusion","oh-wer-eks-tru-schn","zu viel Material"],
+  ["under-extrusion","an-der-eks-tru-schn","zu wenig Material"],
+  ["e-steps / esteps","i-stepps","Extruder-Kalibrierwert"],
+  ["pressure advance / linear advance","pre-scher äd-wäns","Druck-Vorhalt für saubere Kanten"],
+  ["input shaping","in-putt schej-ping","Schwingungs-Ausgleich (schneller drucken)"],
+  ["acceleration","äk-sse-le-rej-schn","Beschleunigung des Kopfes"],
+  ["jerk","dschörk","Ruck / abrupte Richtungsänderung"],
+  ["print speed","print sspiid","Druckgeschwindigkeit"],
+  ["travel move","trä-wel muuw","Leerfahrt ohne Drucken"],
   ["adhesion","äd-hii-schn","Haftung auf dem Bett"],
-  ["raft / brim / skirt","raaft / brimm / sskört","Haft- / Rand-Hilfen unter / um den Druck"],
+  ["raft","raaft","Unterlage-Schicht unter dem Druck"],
+  ["brim","brimm","Rand-Ring zur besseren Haftung"],
+  ["skirt","sskört","Test-Linie rund um den Druck"],
+  ["prime line / purge line","praim lain","Vorab-Linie zum Düse-Füllen"],
+  ["to purge","tu pördsch","Düse durchspülen / freidrücken"],
   ["supports","ssö-ports","Stützstrukturen"],
+  ["tree supports","trii ssö-ports","baumartige Stützen"],
+  ["support interface","ssö-port in-ter-fejs","Trennschicht zur leichten Ablösung"],
   ["overhang","oh-wer-häng","Überhang (Stelle ohne Material darunter)"],
   ["bridging","bridsch-ing","Brücke frei drucken"],
-  ["warping","wor-ping","Verziehen / Hochbiegen der Ecken"],
-  ["stringing","string-ing","feine Fäden zwischen den Teilen"],
-  ["blob","blobb","kleiner Materialklecks"],
+  ["seam / z-seam","ssiim","sichtbare Naht (Start jeder Schicht)"],
+  ["ironing","ai-er-ning","Oberfläche glatt bügeln"],
+  ["coasting","kohs-ting","Fluss früh stoppen gegen Klecks"],
+  ["wipe","waip","Düse am Rand abwischen"],
+  ["part cooling fan","part kuu-ling fänn","Lüfter, der den Druck kühlt"],
+  ["to preheat","tu pri-hiit","vorheizen"],
+  ["WARPING","wor-ping","Verziehen / Hochbiegen der Ecken"],
+  ["stringing / oozing","string-ing / uu-sing","feine Fäden / Nachsabbern"],
+  ["blob / zit","blobb","kleiner Materialklecks"],
   ["elephant's foot","e-le-fents futt","breitgequetschte unterste Schicht"],
-  ["spaghetti","spa-ge-ti","misslungener Druck, der als Fadensalat endet"],
-  ["clog","klogg","Verstopfung der Düse"],
+  ["pillowing","pi-loh-ing","löchrige / unsaubere Oberseite"],
+  ["spaghetti","spa-ge-ti","misslungener Druck als Fadensalat"],
+  ["clog / jam","klogg / dschämm","Verstopfung der Düse"],
   ["to unclog","tu ann-klogg","Verstopfung lösen"],
+  ["cold pull / atomic pull","kohld pull","Reinigen durch Herausziehen"],
   ["layer shift","lä-er schift","Schichtversatz (Druck verrutscht)"],
-  ["ghosting","gohs-ting","Geisterbilder / Wellen an Kanten"],
+  ["skipped steps","sskippt stepps","Motor verliert Schritte"],
+  ["ghosting / ringing","gohs-ting","Geisterbilder / Wellen an Kanten"],
+  ["delamination","di-lä-mi-nej-schn","Schichten lösen sich voneinander"],
+  ["layer adhesion","lä-er äd-hii-schn","Haftung der Schichten untereinander"],
+  ["curling","kör-ling","Hochrollen von Ecken / Überhängen"],
   ["to dial in","tu dai-el in","Einstellungen fein justieren bis perfekt"],
-  ["resin","re-ssin","Harz (für Resin-Drucker)"],
-  ["to cure","tu kjuhr","Harz aushärten (mit UV)"],
-  ["vat","watt","Harzwanne"]
+  ["to calibrate","tu kä-li-brejt","kalibrieren / einmessen"],
+  ["temperature tower","tem-pe-ra-tscher tau-er","Testdruck für beste Temperatur"],
+  ["benchy","ben-tschi","kleines Test-Boot zum Drucker testen"],
+  ["STL / OBJ / 3MF","ess-ti-ell","Datei-Formate für 3D-Modelle"],
+  ["mesh","mesch","das 3D-Gitternetz des Modells"],
+  ["non-manifold","non-mä-ni-fohld","fehlerhaftes (nicht dichtes) Modell"],
+  ["watertight","wo-ter-tait","fehlerfrei geschlossenes Modell"],
+  ["to scale","tu sskejl","Größe ändern"],
+  ["to orient","tu oh-ri-ent","Modell ausrichten (für besten Druck)"],
+  ["tolerance / fit","to-le-rens","Passung / Spiel zwischen Teilen"],
+  ["clearance","kli-rens","Spalt / Abstand für bewegliche Teile"],
+  ["press fit","press fitt","strammer Steck-Sitz"],
+  ["post-processing","pohst-pro-ssä-sing","Nachbearbeitung"],
+  ["to sand","tu ssänd","schleifen"],
+  ["vapor smoothing","wej-por ssmuu-thing","Glätten mit Dampf (ABS/Aceton)"],
+  ["— RESIN / Harz —","","↓ Begriffe für Harz-Drucker ↓"],
+  ["resin","re-ssin","Harz (für SLA-/Resin-Drucker)"],
+  ["FDM vs SLA / MSLA","eff-di-emm","Filament-Druck vs. Harz-Druck"],
+  ["to cure / curing","tu kjuhr","Harz aushärten (mit UV)"],
+  ["post-cure","pohst-kjuhr","Nachhärten nach dem Druck"],
+  ["wash / to wash","wosch","Druck in Alkohol (IPA) reinigen"],
+  ["IPA (alcohol)","ai-pi-ej","Isopropyl-Alkohol zum Reinigen"],
+  ["vat","watt","Harzwanne"],
+  ["FEP film","ef-i-pi film","durchsichtige Folie am Wannenboden"],
+  ["exposure time","iks-poh-scher taim","Belichtungszeit pro Schicht"],
+  ["bottom exposure","bo-tom iks-poh-scher","längere Belichtung der ersten Schichten"],
+  ["lift speed / lift height","lift sspiid","Hub-Geschwindigkeit / -Höhe der Platte"],
+  ["peel force","piil fors","Ablöse-Kraft von der Folie"],
+  ["to hollow","tu ho-loh","Modell innen aushöhlen (Harz sparen)"],
+  ["drain holes","drejn hohls","Ablauf-Löcher fürs Harz"],
+  ["anti-aliasing","än-ti-ej-li-a-ssing","Kanten-Glättung am Pixel"]
  ],
  "PC": [
-  ["to boot","tu buut","hochfahren / starten"],
-  ["to reboot","tu ri-buut","neu starten"],
+  ["to boot / boot up","tu buut","hochfahren / starten"],
+  ["to reboot / restart","tu ri-buut","neu starten"],
+  ["to power on / off","tu pau-er on","an- / ausschalten"],
+  ["to shut down","tu schatt daun","herunterfahren"],
+  ["to sleep / sleep mode","tu ssliip","Energiesparmodus"],
+  ["to hibernate","tu hai-ber-nejt","Ruhezustand (auf Platte)"],
+  ["to wake","tu wejk","aufwecken"],
   ["to crash","tu kräsch","abstürzen"],
+  ["BSOD / blue screen","blu sskriin","Blauer Bildschirm (Windows-Absturz)"],
   ["to freeze","tu friis","einfrieren"],
   ["to hang","tu häng","hängen bleiben"],
   ["to lag / laggy","tu lägg","ruckeln / verzögert"],
+  ["to throttle","tu thro-tel","drosseln (z. B. wegen Hitze)"],
+  ["to overheat","tu oh-wer-hiit","überhitzen"],
+  ["thermal paste","thör-mal pejst","Wärmeleitpaste"],
+  ["heatsink","hiit-ssink","Kühlkörper"],
+  ["fan / fan curve","fänn","Lüfter / Lüfter-Kennlinie"],
+  ["airflow","är-floh","Luftstrom im Gehäuse"],
   ["driver","drai-wer","Treiber"],
+  ["device manager","di-wais mä-ni-dscher","Geräte-Manager (Windows)"],
   ["to install","tu in-stoll","installieren"],
   ["to uninstall","tu ann-in-stoll","deinstallieren"],
+  ["to reinstall","tu ri-in-stoll","neu installieren"],
+  ["clean install","kliin in-stoll","saubere Neuinstallation"],
   ["to update","tu app-dejt","aktualisieren"],
   ["to patch","tu pätsch","Korrektur einspielen"],
+  ["to roll back","tu rohl bäck","Treiber/Update zurückrollen"],
   ["bug","bagg","Fehler"],
   ["glitch","glitsch","kurze Macke / Störung"],
   ["to reset","tu ri-ssett","zurücksetzen"],
+  ["factory reset / to wipe","fäk-to-ri ri-ssett","auf Werkszustand löschen"],
+  ["restore point","ri-stor point","Wiederherstellungspunkt"],
   ["hardware","hard-wär","Hardware"],
   ["software","ssoft-wär","Software"],
+  ["bloatware","bloht-wär","vorinstallierter unnötiger Kram"],
   ["to download","tu daun-lohd","herunterladen"],
   ["to upload","tu app-lohd","hochladen"],
-  ["backup","bäck-app","Sicherung"],
-  ["to overclock","tu oh-wer-klock","übertakten"],
+  ["backup / to back up","bäck-app","Sicherung / sichern"],
+  ["to sync","tu ssink","abgleichen / synchronisieren"],
+  ["to overclock (OC)","tu oh-wer-klock","übertakten"],
+  ["to undervolt","tu an-der-wohlt","Spannung absenken"],
+  ["clock speed","klock sspiid","Taktrate"],
+  ["core / thread","kor / thredd","Rechenkern / Strang"],
   ["bottleneck","bo-tel-neck","Flaschenhals (langsamste Komponente bremst)"],
   ["benchmark","bentsch-mark","Leistungstest"],
   ["frame rate / FPS","frejm rejt","Bilder pro Sekunde"],
   ["to render","tu ren-der","berechnen / erzeugen (Bild, Video)"],
-  ["cache","käsch","Zwischenspeicher"],
+  ["cache / to clear cache","käsch","Zwischenspeicher / leeren"],
   ["RAM / memory","rämm / mä-mo-ri","Arbeitsspeicher"],
   ["GPU","dschi-pi-ju","Grafikkarte"],
   ["CPU","ssi-pi-ju","Prozessor"],
+  ["SSD / NVMe / HDD","ess-ess-di","Speicher-Laufwerke"],
+  ["storage / disk","sto-ridsch / disk","Speicherplatz / Platte"],
   ["to plug in","tu plagg in","einstecken"],
   ["to unplug","tu ann-plagg","ausstecken"],
+  ["peripheral","pe-ri-fe-ral","Zubehör (Maus, Tastatur, …)"],
+  ["to mount / eject","tu maunt","Laufwerk einbinden / auswerfen"],
   ["to format","tu for-mätt","formatieren"],
-  ["to wipe","tu waip","komplett löschen"],
+  ["to partition","tu par-ti-schn","Festplatte aufteilen"],
+  ["to defrag","tu di-frägg","Festplatte aufräumen"],
+  ["to flash (BIOS)","tu fläsch","BIOS/UEFI neu aufspielen"],
+  ["BIOS / UEFI","bai-oss","Grund-Einstellungen des Mainboards"],
+  ["to boot from USB","buut from ju-ess-bi","von USB-Stick starten"],
+  ["bootable","buu-ta-bel","startfähig (Stick/Platte)"],
+  ["to dual boot","dju-al buut","zwei Systeme parallel starten"],
+  ["safe mode","ssejf mohd","abgesicherter Modus"],
+  ["ISO / image","ai-ssoh / i-midsch","Abbild-Datei eines Datenträgers"],
+  ["to zip / unzip","tu sipp","komprimieren / entpacken"],
+  ["archive","ar-kaiw","Archiv (zip, rar)"],
+  ["to encrypt / decrypt","tu in-kript","verschlüsseln / entschlüsseln"],
   ["thermal throttling","thör-mal thro-teling","Drosseln wegen Hitze"],
   ["malware","mäl-wär","Schadsoftware"],
+  ["virus / trojan","wai-russ / troh-dschen","Virus / Trojaner"],
+  ["ransomware","rän-ssom-wär","Erpresser-Software (Daten gesperrt)"],
+  ["spyware / adware","sspai-wär","Spionage- / Werbe-Software"],
+  ["phishing","fi-sching","Betrug per gefälschten Mails/Seiten"],
   ["to scan","tu sskänn","prüfen / durchsuchen"],
+  ["to quarantine","tu kwo-ran-tiin","Schädling in Quarantäne stecken"],
+  ["antivirus","än-ti-wai-russ","Virenschutz"],
   ["firewall","fai-er-woll","Schutzwall gegen Netzwerk-Zugriffe"],
+  ["VPN","wi-pi-en","verschlüsselter Tunnel ins Netz"],
+  ["proxy","prok-ssi","Vermittler-Server"],
+  ["IP address","ai-pi äd-ress","Netzwerk-Adresse"],
+  ["DNS","di-en-ess","Namens-Auflösung (Adresse → IP)"],
+  ["router / modem","ruu-ter / moh-dem","Netzwerk-Verteiler / Anschluss"],
+  ["WiFi / ethernet","wai-fai / i-ter-net","Funk- / Kabel-Netzwerk"],
+  ["to connect / disconnect","tu ko-nekt","verbinden / trennen"],
+  ["hotspot / to tether","hot-spott","Handy als Internet-Zugang"],
+  ["bandwidth","bänd-witth","Datendurchsatz der Leitung"],
+  ["latency / ping","lej-ten-ssi","Verzögerung im Netz"],
+  ["packet loss","pä-kett loss","verlorene Datenpakete"],
   ["to ping","tu ping","Erreichbarkeit testen"],
-  ["shortcut","schort-katt","Tastenkürzel / Verknüpfung"],
-  ["folder","fohl-der","Ordner"],
-  ["file","fail","Datei"],
-  ["to drag and drop","tu drägg änd dropp","ziehen und ablegen"],
-  ["to copy / paste","tu ko-pi / pejst","kopieren / einfügen"],
-  ["screenshot","sskriin-schott","Bildschirmfoto"],
-  ["taskbar","taask-bar","Taskleiste"],
+  ["buffering","ba-fe-ring","Zwischenladen (Video stockt)"],
+  ["to stream","tu sstriim","laufend abspielen/senden"],
+  ["offline / online","off-lain","ohne / mit Verbindung"],
+  ["browser / tab","brau-ser / täbb","Internet-Programm / Reiter"],
+  ["to bookmark","tu buk-mark","Lesezeichen setzen"],
+  ["incognito / private mode","in-kog-ni-toh","privater Modus (keine Spuren)"],
+  ["cookies","ku-kis","kleine Browser-Speicherdaten"],
   ["to log in / sign in","tu logg in","anmelden"],
+  ["to log out / sign out","tu logg aut","abmelden"],
   ["credentials","kre-den-schels","Zugangsdaten"],
+  ["password / passphrase","pass-word","Passwort / Passsatz"],
+  ["2FA / to authenticate","tu-ef-ej","Zwei-Faktor / Identität bestätigen"],
+  ["admin / administrator","äd-min","Verwalter-Rechte"],
+  ["to run as admin","rann äs äd-min","als Administrator ausführen"],
+  ["permissions","per-mi-schns","Berechtigungen"],
+  ["UAC","ju-ej-ssi","Benutzerkonten-Abfrage (Windows)"],
+  ["task manager","taask mä-ni-dscher","Task-Manager"],
+  ["to end task / kill process","end taask","Programm zwangsbeenden"],
+  ["background process","bäck-graund pro-ssess","Prozess im Hintergrund"],
+  ["startup program","start-app proh-grämm","Autostart-Programm"],
   ["to troubleshoot","tu tra-bel-schuut","Fehler suchen & beheben"],
-  ["to brick","tu brick","Gerät unbrauchbar machen"],
-  ["plug and play","plagg änd plej","einstecken und es läuft sofort"]
+  ["to brick (a device)","tu brick","Gerät unbrauchbar machen"],
+  ["plug and play","plagg änd plej","einstecken und es läuft sofort"],
+  ["shortcut / hotkey","schort-katt","Tastenkürzel / Verknüpfung"],
+  ["folder / file","fohl-der / fail","Ordner / Datei"],
+  ["file extension","fail iks-ten-schn","Datei-Endung (.exe, .pdf)"],
+  ["to rename","tu ri-nejm","umbenennen"],
+  ["to right-click / left-click","tu rait-klick","rechts- / linksklicken"],
+  ["to double-click","tu da-bel-klick","doppelklicken"],
+  ["to drag and drop","tu drägg änd dropp","ziehen und ablegen"],
+  ["to copy / paste / cut","tu ko-pi / pejst","kopieren / einfügen / ausschneiden"],
+  ["clipboard","klip-bord","Zwischenablage"],
+  ["to undo / redo","tu ann-du","rückgängig / wiederholen"],
+  ["to save / save as","tu ssejw","speichern / speichern unter"],
+  ["to export / import","tu eks-port","exportieren / importieren"],
+  ["screenshot","sskriin-schott","Bildschirmfoto"],
+  ["to scroll / zoom","tu sskrohl","scrollen / zoomen"],
+  ["to minimize / maximize","tu mi-ni-mais","verkleinern / vergrößern"],
+  ["window / to snap","win-doh","Fenster / andocken"],
+  ["taskbar / desktop","taask-bar","Taskleiste / Schreibtisch"],
+  ["recycle bin / trash","ri-ssai-kel binn","Papierkorb"],
+  ["read-only","riid-ohn-li","schreibgeschützt"],
+  ["to overwrite","tu oh-wer-rait","überschreiben"],
+  ["to pair (bluetooth)","tu pär","koppeln (Bluetooth)"],
+  ["resolution","re-so-luu-schn","Auflösung des Bildschirms"],
+  ["refresh rate / Hz","ri-fresch rejt","Bildwiederholrate"]
  ],
  "Coding": [
-  ["to code","tu kohd","programmieren"],
+  ["to code / coding","tu kohd","programmieren"],
+  ["codebase","kohd-bejs","der gesamte Code eines Projekts"],
   ["bug","bagg","Fehler"],
   ["to debug","tu di-bagg","Fehler suchen"],
+  ["debugger / breakpoint","di-ba-ger","Werkzeug zum Fehlersuchen / Haltepunkt"],
+  ["to step through","tu stepp thru","Code Zeile für Zeile durchgehen"],
   ["stack trace","sstäck trejs","Fehler-Protokoll, wo's knallte"],
-  ["exception","ik-ssep-schn","Ausnahme- / Fehlerfall"],
-  ["to ship","tu schipp","ausliefern / raus damit"],
+  ["exception / error","ik-ssep-schn","Ausnahme- / Fehlerfall"],
+  ["to throw / to raise","tu throh","einen Fehler auslösen"],
+  ["to catch / to handle","tu kätsch","Fehler abfangen / behandeln"],
+  ["to crash","tu kräsch","abstürzen"],
+  ["to log / logging","tu logg","protokollieren / Ausgaben schreiben"],
+  ["to print / console.log","tu print","Wert ausgeben (zum Prüfen)"],
+  ["to ship / ship it","tu schipp","ausliefern / raus damit"],
+  ["to release","tu ri-liis","veröffentlichen"],
   ["to deploy","tu di-ploi","auf den Server bringen"],
+  ["to roll out","tu rohl aut","schrittweise ausrollen"],
   ["to push","tu pusch","Code hochladen (Git)"],
-  ["to pull","tu pull","Code herunterholen (Git)"],
+  ["to pull / fetch","tu pull","Code herunterholen (Git)"],
   ["to commit","tu ko-mitt","Änderung festschreiben (Git)"],
+  ["to stage / unstage","tu stejdsch","Änderung vormerken"],
+  ["to stash","tu sstäsch","Änderung zwischenlagern"],
+  ["to checkout","tu tschek-aut","Branch/Stand wechseln"],
   ["to merge","tu mördsch","zusammenführen"],
   ["merge conflict","mördsch kon-flikt","Konflikt beim Zusammenführen"],
+  ["to resolve","tu ri-sollw","Konflikt auflösen"],
+  ["to rebase","tu ri-bejs","Verlauf neu aufsetzen (Git)"],
+  ["to cherry-pick","tscher-ri pick","einzelnen Commit herauspicken"],
+  ["to squash","tu sskwosch","mehrere Commits zusammenfassen"],
+  ["to revert","tu ri-wört","Änderung rückgängig machen"],
+  ["to roll back","tu rohl bäck","zurückrollen"],
   ["to fork","tu fork","abspalten (Git)"],
   ["to clone","tu klohn","kopieren (Git)"],
   ["repo (repository)","ri-poh","Code-Lager / Projektordner"],
+  ["monorepo","mo-no-ri-poh","alle Projekte in einem Repo"],
   ["branch","bräntsch","Entwicklungs-Zweig"],
+  ["main / master","mejn / mass-ter","Haupt-Zweig"],
+  ["feature branch","fii-tscher bräntsch","Zweig für ein neues Feature"],
+  ["HEAD / origin / remote","hedd / o-ri-dschin","aktueller Stand / Server-Kopie"],
+  ["diff","diff","Unterschied zwischen zwei Ständen"],
+  ["gitignore","gitt-ig-nor","Liste: was Git ignorieren soll"],
   ["pull request (PR)","pull ri-kwest","Antrag, Code zusammenzuführen"],
-  ["to revert","tu ri-wört","rückgängig machen"],
-  ["to roll back","tu rohl bäck","zurückrollen"],
+  ["code review","kohd ri-wju","Code-Begutachtung"],
+  ["to approve","tu ä-pruuw","freigeben / zustimmen"],
+  ["to request changes","ri-kwest tschejn-dschis","Änderungen verlangen"],
   ["to refactor","tu ri-fäk-tor","Code umbauen ohne Funktion zu ändern"],
+  ["to clean up","tu kliin app","aufräumen"],
+  ["tech debt","tek dett","technische Altlasten / Schulden"],
   ["legacy code","le-ga-ssi kohd","alter Code, den keiner anfassen will"],
   ["spaghetti code","spa-ge-ti kohd","unübersichtlicher Code-Salat"],
   ["boilerplate","boi-ler-plejt","immer gleicher Standard-Code"],
   ["snippet","ssni-pett","kleines Code-Schnipsel"],
+  ["one-liner","wann-lai-ner","Einzeiler"],
   ["to hardcode","tu hard-kohd","Wert fest eintragen (statt variabel)"],
   ["to comment out","tu ko-ment aut","Code auskommentieren (deaktivieren)"],
+  ["TODO / FIXME","tu-du / fix-mi","Markierung: noch erledigen / reparieren"],
+  ["WIP (work in progress)","dab-el-ju-ai-pi","Arbeit läuft noch"],
   ["to compile","tu kom-pail","übersetzen"],
+  ["compiler / interpreter","kom-pai-ler","Übersetzer / Ausführer"],
   ["to build","tu bild","bauen"],
+  ["to bundle / minify","tu ban-del","zusammenpacken / verkleinern"],
   ["runtime","rann-taim","Laufzeit (wenn das Programm läuft)"],
-  ["loop","luup","Schleife"],
-  ["to iterate","tu i-te-rejt","durchlaufen"],
-  ["variable","wä-ri-a-bel","Variable"],
-  ["function","fank-schn","Funktion"],
-  ["to call","tu koll","eine Funktion aufrufen"],
-  ["to return","tu ri-törn","zurückgeben"],
-  ["to parse","tu pars","Text / Daten auswerten / zerlegen"],
-  ["to log","tu logg","protokollieren / Ausgaben schreiben"],
-  ["edge case","edsch kejs","Sonder- / Randfall"],
-  ["to handle","tu händ-l","behandeln / abfangen"],
-  ["to override","tu oh-wer-raid","überschreiben / ersetzen"],
-  ["dependency","di-pen-den-ssi","Abhängigkeit (benötigte Bibliothek)"],
-  ["library / package","lai-bre-ri / pä-kidsch","Bibliothek / Paket"],
-  ["framework","frejm-wörk","Programmier-Gerüst"],
-  ["to import","tu im-port","einbinden"],
-  ["to run","tu rann","ausführen / laufen lassen"],
-  ["breaking change","brej-king tschejndsch","Änderung, die anderes kaputt macht"],
-  ["regression","ri-gre-schn","alter Fehler kommt zurück"],
+  ["to run / to execute","tu rann","ausführen / laufen lassen"],
+  ["pipeline / CI/CD","paip-lain","automatischer Bau- & Test-Ablauf"],
+  ["to test / test suite","tu test","testen / Testpaket"],
+  ["unit test","ju-nitt test","Test einer einzelnen Funktion"],
+  ["test coverage","test ka-we-ridsch","Test-Abdeckung des Codes"],
+  ["to assert","tu ä-ssört","prüfen, ob etwas stimmt"],
+  ["flaky test","flej-ki test","mal grüner, mal roter Test (unzuverlässig)"],
+  ["to pass / fail","tu pass","Test bestehen / durchfallen"],
+  ["green / red","griin / redd","Tests ok / Tests kaputt"],
   ["hotfix","hot-fix","Schnellkorrektur"],
-  ["to lint","tu lint","Code automatisch auf Stil / Fehler prüfen"],
+  ["regression","ri-gre-schn","alter Fehler kommt zurück"],
+  ["edge case / corner case","edsch kejs","Sonder- / Randfall"],
+  ["happy path","hä-pi paath","der normale, fehlerfreie Ablauf"],
+  ["breaking change","brej-king tschejndsch","Änderung, die anderes kaputt macht"],
+  ["version / semver","wör-schn","Versionsnummer (z. B. 1.2.3)"],
+  ["to bump","tu bamp","Versionsnummer erhöhen"],
+  ["changelog","tschejndsch-logg","Liste der Änderungen"],
+  ["staging / production","stej-dsching / pro-dak-schn","Test-Umgebung / Echt-Betrieb"],
+  ["dev / local","dew / loh-kel","Entwickler- / lokale Umgebung"],
+  ["environment / env","in-wai-ron-ment","Umgebung"],
+  ["env var","env wahr","Umgebungs-Variable"],
+  ["config","kon-fig","Konfiguration / Einstellungen"],
+  ["secret / API key / token","ssi-kret","geheimer Schlüssel / Zugangs-Code"],
+  ["to lint / linter","tu lint","Code automatisch auf Stil / Fehler prüfen"],
+  ["to format / formatter","tu for-mätt","Code automatisch sauber formatieren"],
   ["syntax error","ssin-täks e-ror","Tippfehler in der Schreibregel"],
   ["typo","tai-poh","Tippfehler"],
+  ["to indent / indentation","tu in-dent","einrücken / Einrückung"],
   ["IDE","ai-di-i","Programmier-Umgebung (z. B. VS Code)"],
-  ["terminal / shell","tör-mi-nal / schell","Kommandozeile"],
-  ["nested","ne-sted","verschachtelt"],
-  ["wrapper","rä-per","Hülle drumherum"],
-  ["callback","koll-bäck","Rückruf-Funktion"],
+  ["terminal / shell / CLI","tör-mi-nal","Kommandozeile"],
+  ["command / flag / argument","ko-mänd","Befehl / Schalter / Wert"],
+  ["script","sskript","kleines Programm / Ablauf"],
+  ["to pipe","tu paip","Ausgabe weiterleiten ( | )"],
+  ["sudo / root","ssuu-du / ruut","mit höchsten Rechten ausführen"],
+  ["variable / constant","wä-ri-a-bel","Variable / fester Wert"],
+  ["scope","sskohp","Gültigkeitsbereich"],
+  ["function / method","fank-schn / me-thod","Funktion / Methode"],
+  ["argument / parameter","ar-gju-ment","Übergabe-Wert"],
+  ["to call","tu koll","eine Funktion aufrufen"],
+  ["to return / return value","tu ri-törn","zurückgeben / Rückgabewert"],
+  ["array / list","ä-rej / list","Liste von Werten"],
+  ["object / dict / map","ob-dschekt","Schlüssel-Wert-Sammlung"],
+  ["string / int / float","string","Text / Ganzzahl / Kommazahl"],
+  ["boolean / true / false","buu-li-en","Ja-Nein-Wert"],
+  ["null / undefined","nall","leer / nicht definiert"],
+  ["loop / for / while","luup","Schleife"],
+  ["to iterate","tu i-te-rejt","durchlaufen"],
+  ["to break / continue","tu brejk","Schleife abbrechen / weiter"],
+  ["recursion / recursive","ri-kör-schn","Funktion ruft sich selbst auf"],
+  ["if-else / condition","iff-els","Bedingung / Verzweigung"],
+  ["to parse","tu pars","Text / Daten auswerten / zerlegen"],
+  ["to serialize / JSON","tu ssi-ri-a-lais","Daten in Text umwandeln"],
+  ["to encode / decode","tu in-kohd","kodieren / dekodieren"],
+  ["regex","re-geks","Muster zum Text-Durchsuchen"],
+  ["class / instance","klass / in-stenss","Bauplan / konkretes Objekt"],
+  ["to instantiate / new","tu in-stän-schi-ejt","ein Objekt erzeugen"],
+  ["inheritance / to extend","in-he-ri-tens","Vererbung / erweitern"],
+  ["to override / overload","tu oh-wer-raid","überschreiben / überladen"],
+  ["interface / abstract","in-ter-fejs","Schnittstelle / abstrakt"],
+  ["to implement","tu im-ple-ment","umsetzen / einbauen"],
+  ["public / private / static","pa-blik","öffentlich / privat / statisch"],
+  ["constructor","kon-strak-tor","Erzeuger-Funktion einer Klasse"],
+  ["getter / setter","ge-ter / ssä-ter","Lese- / Schreib-Funktion"],
+  ["property / attribute","pro-per-ti","Eigenschaft eines Objekts"],
+  ["module / package","mo-djuul / pä-kidsch","Baustein / Paket"],
+  ["library / lib","lai-bre-ri","Bibliothek (fertiger Code)"],
+  ["dependency / deps","di-pen-den-ssi","Abhängigkeit (benötigte Bibliothek)"],
+  ["framework","frejm-wörk","Programmier-Gerüst"],
+  ["to import / export","tu im-port","einbinden / bereitstellen"],
+  ["package manager / npm / pip","pä-kidsch mä-ni-dscher","Paket-Verwalter zum Installieren"],
   ["async / await","ej-ssink / a-wejt","nebenläufig / warten auf Ergebnis"],
   ["promise","pro-miss","Versprechen auf späteres Ergebnis"],
-  ["frontend","front-end","Sicht- / Anzeige-Seite"],
-  ["backend","bäck-end","Server-Seite"],
-  ["API / endpoint","ej-pi-ai / end-point","Schnittstelle / Zugriffsadresse"],
-  ["to fetch","tu fetsch","abrufen"],
-  ["payload","pej-lohd","die eigentlichen Nutzdaten"],
-  ["production (prod)","pro-dak-schn","Echt-Betrieb"],
-  ["to kill","tu kill","einen Prozess abschießen"],
-  ["placeholder","plejs-hohl-der","Platzhalter"],
+  ["callback","koll-bäck","Rückruf-Funktion"],
+  ["callback hell","koll-bäck hell","Verschachtelungs-Chaos von Callbacks"],
+  ["thread / concurrency","thredd","Strang / Nebenläufigkeit"],
+  ["race condition","rejs kon-di-schn","Fehler durch gleichzeitige Zugriffe"],
+  ["deadlock","dedd-lock","gegenseitige Blockade"],
+  ["to block / non-blocking","tu block","blockierend / nicht blockierend"],
+  ["event / handler","i-went","Ereignis / Behandler"],
+  ["to emit / to trigger","tu i-mitt","auslösen / aussenden"],
+  ["queue / stack","kju / sstäck","Warteschlange / Stapel"],
+  ["memory leak","mä-mo-ri liik","Speicher wird nicht freigegeben"],
+  ["garbage collection (GC)","gar-bidsch ko-lek-schn","automatische Speicher-Reinigung"],
+  ["pointer / reference","poin-ter","Verweis auf einen Speicherort"],
+  ["null pointer","nall poin-ter","Verweis ins Leere (Fehlerquelle)"],
+  ["buffer / overflow","ba-fer","Zwischenspeicher / Überlauf"],
+  ["bit / byte / hex","bitt / bait","kleinste Daten-Einheiten"],
+  ["flag / toggle","flägg / to-gel","Schalter (an/aus)"],
+  ["feature flag","fii-tscher flägg","Schalter für eine Funktion"],
+  ["to short-circuit","tu schort-ssör-kit","frühzeitig abkürzen (Bedingung)"],
+  ["ternary","tör-na-ri","Kurz-Schreibweise für if-else"],
+  ["syntactic sugar","ssin-täk-tik schu-gar","bequeme Kurz-Schreibweise"],
+  ["DRY / KISS / YAGNI","drai / kiss","Prinzipien: nicht wiederholen / einfach halten"],
+  ["design pattern","di-sain pä-tern","bewährtes Lösungs-Muster"],
   ["code smell","kohd ssmell","Hinweis auf schlechten Code"],
-  ["gotcha","gat-scha","gemeine Falle / Stolperstein"]
+  ["to monkey patch","man-ki pätsch","fremden Code zur Laufzeit ändern"],
+  ["gotcha","gat-scha","gemeine Falle / Stolperstein"],
+  ["footgun","futt-gann","Funktion, mit der man sich leicht selbst schadet"],
+  ["rubber duck (debugging)","ra-ber dack","laut erklären, um den Fehler zu finden"],
+  ["to grok","tu grock","etwas voll verstehen / durchdringen"],
+  ["frontend / backend","front-end / bäck-end","Anzeige-Seite / Server-Seite"],
+  ["full stack / DevOps","full sstäck","beides / Betrieb & Entwicklung"],
+  ["UI / UX","ju-ai / ju-eks","Oberfläche / Bedien-Erlebnis"],
+  ["component / state / props","kom-poh-nent","Baustein / Zustand / Übergaben (Web)"],
+  ["hook / to render","huk / ren-der","Einklink-Funktion / anzeigen"],
+  ["DOM","domm","Baum-Struktur der Webseite"],
+  ["responsive","ri-sspon-ssiw","passt sich an Bildschirmgröße an"],
+  ["API / endpoint","ej-pi-ai / end-point","Schnittstelle / Zugriffsadresse"],
+  ["request / response","ri-kwest / ri-sspons","Anfrage / Antwort"],
+  ["payload","pej-lohd","die eigentlichen Nutzdaten"],
+  ["to fetch / to hit","tu fetsch","abrufen / einen Endpunkt ansprechen"],
+  ["GET / POST / PUT / DELETE","gett / pohst","Arten von Web-Anfragen"],
+  ["status code (404, 500)","stej-tus kohd","Antwort-Code (404 = nicht gefunden)"],
+  ["to authenticate / auth","tu o-then-ti-kejt","Identität prüfen / Anmeldung"],
+  ["token / session","toh-ken","Zugangs-Marke / Sitzung"],
+  ["container / Docker","kon-tej-ner","gekapselte Lauf-Umgebung"],
+  ["VM (virtual machine)","wi-emm","virtueller Computer"],
+  ["localhost / port","loh-kel-host","der eigene Rechner / Anschluss-Nummer"],
+  ["to spin up a server","sspinn app","einen Server hochfahren"],
+  ["daemon / service","dii-mon","Hintergrund-Dienst"],
+  ["process / PID","pro-ssess","laufendes Programm / dessen Nummer"],
+  ["to kill","tu kill","einen Prozess abschießen"],
+  ["cron / cron job","kronn","zeitgesteuerte Aufgabe"],
+  ["database / DB","dej-ta-bejs","Datenbank"],
+  ["query / to query","kwii-ri","Abfrage / abfragen"],
+  ["table / row / column","tej-bel / roh","Tabelle / Zeile / Spalte"],
+  ["schema / migration","sski-ma","Aufbau / Struktur-Änderung"],
+  ["index / to index","in-deks","Register für schnelle Suche"],
+  ["join / foreign key","dschoin","Tabellen verknüpfen / Fremdschlüssel"],
+  ["CRUD","krad","Anlegen-Lesen-Ändern-Löschen"],
+  ["ORM","oh-ar-emm","Brücke Objekt ↔ Datenbank"],
+  ["to cache / Redis","tu käsch","zwischenspeichern (schneller)"],
+  ["to scale","tu sskejl","Last hochskalieren"],
+  ["load balancer","lohd bä-len-ser","verteilt Last auf mehrere Server"],
+  ["to optimize / perf","tu op-ti-mais","optimieren / Leistung"],
+  ["big O","bigg oh","Maß für Aufwand/Geschwindigkeit"],
+  ["to profile / profiler","tu proh-fail","messen, was langsam ist"],
+  ["dummy data / placeholder","da-mi / plejs-hohl-der","Test-Daten / Platzhalter"],
+  ["to mock / stub","tu mock","Ersatz-Objekt fürs Testen"],
+  ["to scaffold","tu sskä-fold","Grundgerüst automatisch erzeugen"],
+  ["dummy / fake","da-mi / fejk","Platzhalter / unecht"]
  ]
 };
 
-// strip "to " and slashes for spoken English
 function speakText(s){
-  const t = s.replace(/\(.*?\)/g,'').split('/')[0].trim();
+  let t = s.replace(/\(.*?\)/g,'').replace(/—.*$/,'').split('/')[0].replace(/[^a-zA-Z .'-]/g,'').trim();
+  if(!t) return;
   if(!('speechSynthesis' in window)) { alert('Dein Browser kann keine Aussprache abspielen.'); return; }
   const u = new SpeechSynthesisUtterance(t);
   u.lang = 'en-US'; u.rate = 0.85;
@@ -306,14 +609,17 @@ function speakText(s){
 
 let cat = "3D-Druck", mode = "cards", idx = 0;
 
-// Tabs
+// total count
+let total=0; Object.values(DATA).forEach(a=>total+=a.filter(x=>x[1]!=="").length);
+document.getElementById('totalSub').textContent = `${total} Begriffe · 3D-Druck · PC · Coding · mit Aussprache 🔊`;
+
 const tabsEl = document.getElementById('tabs');
 Object.keys(DATA).forEach(c=>{
-  const b=document.createElement('button'); b.className='tab'+(c===cat?' active':''); b.textContent=c;
-  b.onclick=()=>{cat=c; idx=0; document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.textContent===c)); render();};
+  const n=DATA[c].filter(x=>x[1]!=="").length;
+  const b=document.createElement('button'); b.className='tab'+(c===cat?' active':''); b.textContent=`${c} (${n})`;
+  b.onclick=()=>{cat=c; idx=0; document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===b)); render();};
   tabsEl.appendChild(b);
 });
-// Modes
 document.querySelectorAll('.modebtn').forEach(b=>{
   b.onclick=()=>{mode=b.dataset.mode; document.querySelectorAll('.modebtn').forEach(x=>x.classList.toggle('active',x===b)); render();};
 });
@@ -327,14 +633,13 @@ function render(){
   if(mode==='quiz')  newQuiz();
 }
 
-// ---- Cards ----
 const fcard=document.getElementById('fcard');
 fcard.onclick=()=>fcard.classList.toggle('flipped');
 function renderCard(){
   const arr=DATA[cat]; const it=arr[idx];
   fcard.classList.remove('flipped');
   document.getElementById('fFront').textContent=it[0];
-  document.getElementById('fIpa').textContent='['+it[1]+']';
+  document.getElementById('fIpa').textContent=it[1]?'['+it[1]+']':'';
   document.getElementById('fBack').textContent=it[2];
   document.getElementById('counter').textContent=`${cat} — Karte ${idx+1} / ${arr.length}`;
 }
@@ -342,26 +647,27 @@ document.getElementById('fSpeak').onclick=(e)=>{e.stopPropagation(); speakText(D
 document.getElementById('next').onclick=()=>{idx=(idx+1)%DATA[cat].length; renderCard();};
 document.getElementById('prev').onclick=()=>{idx=(idx-1+DATA[cat].length)%DATA[cat].length; renderCard();};
 
-// ---- List ----
 function renderList(){
   const q=(document.getElementById('search').value||'').toLowerCase();
   const body=document.getElementById('listBody'); body.innerHTML='';
-  DATA[cat].filter(it=>it[0].toLowerCase().includes(q)||it[2].toLowerCase().includes(q)).forEach(it=>{
+  DATA[cat].filter(it=>it[1]!=="").filter(it=>it[0].toLowerCase().includes(q)||it[2].toLowerCase().includes(q)).forEach(it=>{
     const r=document.createElement('div'); r.className='row';
-    r.innerHTML=`<div><div class="en">${it[0]}</div><div class="ipa2">[${it[1]}]</div><div class="de2">${it[2]}</div></div>`;
+    const left=document.createElement('div');
+    left.innerHTML=`<div class="en"></div><div class="ipa2"></div><div class="de2"></div>`;
+    left.querySelector('.en').textContent=it[0];
+    left.querySelector('.ipa2').textContent='['+it[1]+']';
+    left.querySelector('.de2').textContent=it[2];
+    r.appendChild(left);
     const sp=document.createElement('button'); sp.className='sp'; sp.textContent='🔊';
     sp.onclick=()=>speakText(it[0]); r.appendChild(sp); body.appendChild(r);
   });
 }
 document.getElementById('search').oninput=renderList;
 
-// ---- Quiz ----
-let qScore=0, qTotal=0, qAnswer=null;
+let qScore=0, qTotal=0;
 function newQuiz(){
-  const arr=DATA[cat];
+  const arr=DATA[cat].filter(x=>x[1]!=="");
   const correct=arr[Math.floor(Math.random()*arr.length)];
-  qAnswer=correct;
-  // 3 wrong options
   const opts=[correct];
   while(opts.length<4){ const c=arr[Math.floor(Math.random()*arr.length)]; if(!opts.includes(c)) opts.push(c); }
   opts.sort(()=>Math.random()-0.5);
@@ -379,14 +685,12 @@ function checkQuiz(btn,chosen,correct){
   qTotal++;
   document.querySelectorAll('.opt').forEach(b=>{ b.style.pointerEvents='none';
     if(b.textContent===correct[2]) b.classList.add('correct'); });
-  if(chosen===correct){ qScore++; }
-  else { btn.classList.add('wrong'); }
+  if(chosen===correct){ qScore++; } else { btn.classList.add('wrong'); }
   document.getElementById('quizScore').textContent=`Punkte: ${qScore} / ${qTotal}`;
   document.getElementById('quizNext').style.display='block';
 }
 document.getElementById('quizNext').onclick=newQuiz;
 
-// voices may load late
 if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>{}; }
 render();
 </script>
