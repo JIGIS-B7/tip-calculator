@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Englisch lernen — 3D-Druck, PC & Coding</title>
+<style>
+  :root{
+    --bg:#0f1220; --card:#1a1f35; --card2:#222842; --accent:#5b8cff;
+    --accent2:#8b5cff; --txt:#eef1ff; --muted:#9aa3c7; --ok:#36d399; --bad:#ff5c7a;
+    --border:#2c3358;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(160deg,#0f1220,#161a30); color:var(--txt); padding-bottom:40px;}
+  header{padding:20px 16px 12px; text-align:center;}
+  h1{font-size:20px; margin:0 0 4px;}
+  .sub{color:var(--muted); font-size:13px;}
+  .tabs{display:flex; gap:8px; padding:10px 12px; overflow-x:auto;}
+  .tab{flex:0 0 auto; padding:9px 14px; border-radius:999px; background:var(--card);
+    border:1px solid var(--border); color:var(--txt); font-size:14px; cursor:pointer;}
+  .tab.active{background:linear-gradient(90deg,var(--accent),var(--accent2)); border-color:transparent; font-weight:600;}
+  .wrap{padding:8px 14px; max-width:680px; margin:0 auto;}
+  .modes{display:flex; gap:8px; margin:6px 0 14px;}
+  .modebtn{flex:1; padding:11px; border-radius:12px; background:var(--card); border:1px solid var(--border);
+    color:var(--txt); font-size:14px; font-weight:600; cursor:pointer;}
+  .modebtn.active{background:var(--card2); border-color:var(--accent);}
+  input.search{width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--border);
+    background:var(--card); color:var(--txt); font-size:15px; margin-bottom:12px;}
+  /* Flashcard */
+  .flash{perspective:1200px; margin:0 auto;}
+  .fcard{position:relative; width:100%; min-height:230px; cursor:pointer;
+    transform-style:preserve-3d; transition:transform .5s; }
+  .fcard.flipped{transform:rotateY(180deg);}
+  .face{position:absolute; inset:0; backface-visibility:hidden; border-radius:18px;
+    padding:22px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; border:1px solid var(--border);}
+  .front{background:linear-gradient(160deg,var(--card),var(--card2));}
+  .back{background:linear-gradient(160deg,#1d2b4a,#243a63); transform:rotateY(180deg);}
+  .big{font-size:30px; font-weight:700; margin:6px 0;}
+  .ipa{color:var(--accent); font-size:18px; margin:4px 0;}
+  .de{font-size:16px; color:var(--txt); margin-top:6px;}
+  .hint{color:var(--muted); font-size:12px; margin-top:14px;}
+  .navrow{display:flex; gap:8px; align-items:center; margin:14px 0;}
+  .navbtn{flex:1; padding:13px; border-radius:12px; border:none; font-size:16px; font-weight:700; cursor:pointer; color:#fff;
+    background:var(--card2); border:1px solid var(--border);}
+  .navbtn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2)); border:none;}
+  .counter{color:var(--muted); font-size:13px; text-align:center; margin-bottom:6px;}
+  .speak{margin-top:8px; padding:9px 16px; border-radius:999px; border:1px solid var(--accent);
+    background:transparent; color:var(--accent); font-size:14px; cursor:pointer;}
+  /* List */
+  .row{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:8px;
+    display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .row .en{font-weight:700; font-size:16px;}
+  .row .ipa2{color:var(--accent); font-size:13px;}
+  .row .de2{color:var(--muted); font-size:13px; margin-top:2px;}
+  .row .sp{flex:0 0 auto; background:transparent; border:1px solid var(--border); color:var(--accent);
+    border-radius:50%; width:40px; height:40px; font-size:18px; cursor:pointer;}
+  /* Quiz */
+  .quizq{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; text-align:center;}
+  .quizq .q{font-size:14px; color:var(--muted);}
+  .quizq .qword{font-size:26px; font-weight:700; margin:10px 0 18px;}
+  .opt{display:block; width:100%; padding:14px; margin:8px 0; border-radius:12px; background:var(--card2);
+    border:1px solid var(--border); color:var(--txt); font-size:16px; cursor:pointer; text-align:left;}
+  .opt.correct{background:rgba(54,211,153,.2); border-color:var(--ok);}
+  .opt.wrong{background:rgba(255,92,122,.2); border-color:var(--bad);}
+  .score{text-align:center; color:var(--muted); margin:12px 0;}
+  .footer{text-align:center; color:var(--muted); font-size:12px; padding:24px 16px 0;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🇬🇧 Englisch lernen für Technik</h1>
+  <div class="sub">3D-Druck · PC · Programmieren — mit Aussprache 🔊</div>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="wrap">
+  <div class="modes">
+    <button class="modebtn active" data-mode="cards">🃏 Karten</button>
+    <button class="modebtn" data-mode="list">📋 Liste</button>
+    <button class="modebtn" data-mode="quiz">🎯 Quiz</button>
+  </div>
+
+  <!-- CARDS -->
+  <div id="cards">
+    <div class="counter" id="counter"></div>
+    <div class="flash">
+      <div class="fcard" id="fcard">
+        <div class="face front">
+          <div class="big" id="fFront"></div>
+          <div class="ipa" id="fIpa"></div>
+          <button class="speak" id="fSpeak">🔊 anhören</button>
+          <div class="hint">Tippen zum Umdrehen → Bedeutung</div>
+        </div>
+        <div class="face back">
+          <div class="de" id="fBack"></div>
+          <div class="hint">Tippen zum Zurückdrehen</div>
+        </div>
+      </div>
+    </div>
+    <div class="navrow">
+      <button class="navbtn" id="prev">◀︎ Zurück</button>
+      <button class="navbtn primary" id="next">Weiter ▶︎</button>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div id="list" style="display:none">
+    <input class="search" id="search" placeholder="🔍 Suchen (deutsch oder englisch)...">
+    <div id="listBody"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" style="display:none">
+    <div class="score" id="quizScore"></div>
+    <div class="quizq">
+      <div class="q">Was bedeutet dieses Wort?</div>
+      <div class="qword" id="quizWord"></div>
+      <div id="quizOpts"></div>
+    </div>
+    <div class="navrow"><button class="navbtn primary" id="quizNext" style="display:none">Nächste Frage ▶︎</button></div>
+  </div>
+</div>
+
+<div class="footer">Tipp: Auf dem iPhone „Zum Home-Bildschirm" hinzufügen — dann ist es wie eine App.<br>Aussprache braucht Ton an.</div>
+
+<script>
+const DATA = {
+ "3D-Druck": [
+  ["slicer","sslai-ser","Programm, das das Modell in Druckschichten zerlegt (Cura, PrusaSlicer)"],
+  ["to slice","tu sslais","slicen — das Modell in Schichten schneiden"],
+  ["layer","lä-er","Schicht"],
+  ["layer height","lä-er hait","Schichthöhe (z. B. 0,2 mm)"],
+  ["first layer","först lä-er","erste Schicht (wichtigste fürs Gelingen)"],
+  ["infill","in-fill","Füllung im Inneren (z. B. 20 %)"],
+  ["wall / perimeter","woll / pe-ri-me-ter","Außenwand des Drucks"],
+  ["nozzle","no-ssel","Düse"],
+  ["hotend","hot-end","das heiße Ende, schmilzt das Filament"],
+  ["extruder","eks-tru-der","Vorschub, der das Filament schiebt"],
+  ["filament","fi-la-ment","der Druck-Faden (PLA, PETG, ABS, TPU)"],
+  ["spool","sspuul","die Filament-Rolle"],
+  ["print bed","print bett","Druckbett"],
+  ["bed leveling","bett le-we-ling","Bett ausrichten / einstellen"],
+  ["to level","tu le-wel","das Bett gerade / eben machen"],
+  ["to home","tu hoom","Druckkopf in die Nullposition fahren"],
+  ["endstop","end-stopp","Endschalter"],
+  ["firmware","förm-wär","die Steuer-Software des Druckers (Marlin, Klipper)"],
+  ["to flash","tu fläsch","Firmware aufspielen"],
+  ["gcode","dschi-kohd","die Maschinenbefehle, die der Drucker abarbeitet"],
+  ["retraction","ri-träk-schn","Filament zurückziehen (gegen Fäden)"],
+  ["flow rate","floh rejt","Materialfluss"],
+  ["adhesion","äd-hii-schn","Haftung auf dem Bett"],
+  ["raft / brim / skirt","raaft / brimm / sskört","Haft- / Rand-Hilfen unter / um den Druck"],
+  ["supports","ssö-ports","Stützstrukturen"],
+  ["overhang","oh-wer-häng","Überhang (Stelle ohne Material darunter)"],
+  ["bridging","bridsch-ing","Brücke frei drucken"],
+  ["warping","wor-ping","Verziehen / Hochbiegen der Ecken"],
+  ["stringing","string-ing","feine Fäden zwischen den Teilen"],
+  ["blob","blobb","kleiner Materialklecks"],
+  ["elephant's foot","e-le-fents futt","breitgequetschte unterste Schicht"],
+  ["spaghetti","spa-ge-ti","misslungener Druck, der als Fadensalat endet"],
+  ["clog","klogg","Verstopfung der Düse"],
+  ["to unclog","tu ann-klogg","Verstopfung lösen"],
+  ["layer shift","lä-er schift","Schichtversatz (Druck verrutscht)"],
+  ["ghosting","gohs-ting","Geisterbilder / Wellen an Kanten"],
+  ["to dial in","tu dai-el in","Einstellungen fein justieren bis perfekt"],
+  ["resin","re-ssin","Harz (für Resin-Drucker)"],
+  ["to cure","tu kjuhr","Harz aushärten (mit UV)"],
+  ["vat","watt","Harzwanne"]
+ ],
+ "PC": [
+  ["to boot","tu buut","hochfahren / starten"],
+  ["to reboot","tu ri-buut","neu starten"],
+  ["to crash","tu kräsch","abstürzen"],
+  ["to freeze","tu friis","einfrieren"],
+  ["to hang","tu häng","hängen bleiben"],
+  ["to lag / laggy","tu lägg","ruckeln / verzögert"],
+  ["driver","drai-wer","Treiber"],
+  ["to install","tu in-stoll","installieren"],
+  ["to uninstall","tu ann-in-stoll","deinstallieren"],
+  ["to update","tu app-dejt","aktualisieren"],
+  ["to patch","tu pätsch","Korrektur einspielen"],
+  ["bug","bagg","Fehler"],
+  ["glitch","glitsch","kurze Macke / Störung"],
+  ["to reset","tu ri-ssett","zurücksetzen"],
+  ["hardware","hard-wär","Hardware"],
+  ["software","ssoft-wär","Software"],
+  ["to download","tu daun-lohd","herunterladen"],
+  ["to upload","tu app-lohd","hochladen"],
+  ["backup","bäck-app","Sicherung"],
+  ["to overclock","tu oh-wer-klock","übertakten"],
+  ["bottleneck","bo-tel-neck","Flaschenhals (langsamste Komponente bremst)"],
+  ["benchmark","bentsch-mark","Leistungstest"],
+  ["frame rate / FPS","frejm rejt","Bilder pro Sekunde"],
+  ["to render","tu ren-der","berechnen / erzeugen (Bild, Video)"],
+  ["cache","käsch","Zwischenspeicher"],
+  ["RAM / memory","rämm / mä-mo-ri","Arbeitsspeicher"],
+  ["GPU","dschi-pi-ju","Grafikkarte"],
+  ["CPU","ssi-pi-ju","Prozessor"],
+  ["to plug in","tu plagg in","einstecken"],
+  ["to unplug","tu ann-plagg","ausstecken"],
+  ["to format","tu for-mätt","formatieren"],
+  ["to wipe","tu waip","komplett löschen"],
+  ["thermal throttling","thör-mal thro-teling","Drosseln wegen Hitze"],
+  ["malware","mäl-wär","Schadsoftware"],
+  ["to scan","tu sskänn","prüfen / durchsuchen"],
+  ["firewall","fai-er-woll","Schutzwall gegen Netzwerk-Zugriffe"],
+  ["to ping","tu ping","Erreichbarkeit testen"],
+  ["shortcut","schort-katt","Tastenkürzel / Verknüpfung"],
+  ["folder","fohl-der","Ordner"],
+  ["file","fail","Datei"],
+  ["to drag and drop","tu drägg änd dropp","ziehen und ablegen"],
+  ["to copy / paste","tu ko-pi / pejst","kopieren / einfügen"],
+  ["screenshot","sskriin-schott","Bildschirmfoto"],
+  ["taskbar","taask-bar","Taskleiste"],
+  ["to log in / sign in","tu logg in","anmelden"],
+  ["credentials","kre-den-schels","Zugangsdaten"],
+  ["to troubleshoot","tu tra-bel-schuut","Fehler suchen & beheben"],
+  ["to brick","tu brick","Gerät unbrauchbar machen"],
+  ["plug and play","plagg änd plej","einstecken und es läuft sofort"]
+ ],
+ "Coding": [
+  ["to code","tu kohd","programmieren"],
+  ["bug","bagg","Fehler"],
+  ["to debug","tu di-bagg","Fehler suchen"],
+  ["stack trace","sstäck trejs","Fehler-Protokoll, wo's knallte"],
+  ["exception","ik-ssep-schn","Ausnahme- / Fehlerfall"],
+  ["to ship","tu schipp","ausliefern / raus damit"],
+  ["to deploy","tu di-ploi","auf den Server bringen"],
+  ["to push","tu pusch","Code hochladen (Git)"],
+  ["to pull","tu pull","Code herunterholen (Git)"],
+  ["to commit","tu ko-mitt","Änderung festschreiben (Git)"],
+  ["to merge","tu mördsch","zusammenführen"],
+  ["merge conflict","mördsch kon-flikt","Konflikt beim Zusammenführen"],
+  ["to fork","tu fork","abspalten (Git)"],
+  ["to clone","tu klohn","kopieren (Git)"],
+  ["repo (repository)","ri-poh","Code-Lager / Projektordner"],
+  ["branch","bräntsch","Entwicklungs-Zweig"],
+  ["pull request (PR)","pull ri-kwest","Antrag, Code zusammenzuführen"],
+  ["to revert","tu ri-wört","rückgängig machen"],
+  ["to roll back","tu rohl bäck","zurückrollen"],
+  ["to refactor","tu ri-fäk-tor","Code umbauen ohne Funktion zu ändern"],
+  ["legacy code","le-ga-ssi kohd","alter Code, den keiner anfassen will"],
+  ["spaghetti code","spa-ge-ti kohd","unübersichtlicher Code-Salat"],
+  ["boilerplate","boi-ler-plejt","immer gleicher Standard-Code"],
+  ["snippet","ssni-pett","kleines Code-Schnipsel"],
+  ["to hardcode","tu hard-kohd","Wert fest eintragen (statt variabel)"],
+  ["to comment out","tu ko-ment aut","Code auskommentieren (deaktivieren)"],
+  ["to compile","tu kom-pail","übersetzen"],
+  ["to build","tu bild","bauen"],
+  ["runtime","rann-taim","Laufzeit (wenn das Programm läuft)"],
+  ["loop","luup","Schleife"],
+  ["to iterate","tu i-te-rejt","durchlaufen"],
+  ["variable","wä-ri-a-bel","Variable"],
+  ["function","fank-schn","Funktion"],
+  ["to call","tu koll","eine Funktion aufrufen"],
+  ["to return","tu ri-törn","zurückgeben"],
+  ["to parse","tu pars","Text / Daten auswerten / zerlegen"],
+  ["to log","tu logg","protokollieren / Ausgaben schreiben"],
+  ["edge case","edsch kejs","Sonder- / Randfall"],
+  ["to handle","tu händ-l","behandeln / abfangen"],
+  ["to override","tu oh-wer-raid","überschreiben / ersetzen"],
+  ["dependency","di-pen-den-ssi","Abhängigkeit (benötigte Bibliothek)"],
+  ["library / package","lai-bre-ri / pä-kidsch","Bibliothek / Paket"],
+  ["framework","frejm-wörk","Programmier-Gerüst"],
+  ["to import","tu im-port","einbinden"],
+  ["to run","tu rann","ausführen / laufen lassen"],
+  ["breaking change","brej-king tschejndsch","Änderung, die anderes kaputt macht"],
+  ["regression","ri-gre-schn","alter Fehler kommt zurück"],
+  ["hotfix","hot-fix","Schnellkorrektur"],
+  ["to lint","tu lint","Code automatisch auf Stil / Fehler prüfen"],
+  ["syntax error","ssin-täks e-ror","Tippfehler in der Schreibregel"],
+  ["typo","tai-poh","Tippfehler"],
+  ["IDE","ai-di-i","Programmier-Umgebung (z. B. VS Code)"],
+  ["terminal / shell","tör-mi-nal / schell","Kommandozeile"],
+  ["nested","ne-sted","verschachtelt"],
+  ["wrapper","rä-per","Hülle drumherum"],
+  ["callback","koll-bäck","Rückruf-Funktion"],
+  ["async / await","ej-ssink / a-wejt","nebenläufig / warten auf Ergebnis"],
+  ["promise","pro-miss","Versprechen auf späteres Ergebnis"],
+  ["frontend","front-end","Sicht- / Anzeige-Seite"],
+  ["backend","bäck-end","Server-Seite"],
+  ["API / endpoint","ej-pi-ai / end-point","Schnittstelle / Zugriffsadresse"],
+  ["to fetch","tu fetsch","abrufen"],
+  ["payload","pej-lohd","die eigentlichen Nutzdaten"],
+  ["production (prod)","pro-dak-schn","Echt-Betrieb"],
+  ["to kill","tu kill","einen Prozess abschießen"],
+  ["placeholder","plejs-hohl-der","Platzhalter"],
+  ["code smell","kohd ssmell","Hinweis auf schlechten Code"],
+  ["gotcha","gat-scha","gemeine Falle / Stolperstein"]
+ ]
+};
+
+// strip "to " and slashes for spoken English
+function speakText(s){
+  const t = s.replace(/\(.*?\)/g,'').split('/')[0].trim();
+  if(!('speechSynthesis' in window)) { alert('Dein Browser kann keine Aussprache abspielen.'); return; }
+  const u = new SpeechSynthesisUtterance(t);
+  u.lang = 'en-US'; u.rate = 0.85;
+  const v = speechSynthesis.getVoices().find(v=>v.lang.startsWith('en'));
+  if(v) u.voice = v;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+
+let cat = "3D-Druck", mode = "cards", idx = 0;
+
+// Tabs
+const tabsEl = document.getElementById('tabs');
+Object.keys(DATA).forEach(c=>{
+  const b=document.createElement('button'); b.className='tab'+(c===cat?' active':''); b.textContent=c;
+  b.onclick=()=>{cat=c; idx=0; document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.textContent===c)); render();};
+  tabsEl.appendChild(b);
+});
+// Modes
+document.querySelectorAll('.modebtn').forEach(b=>{
+  b.onclick=()=>{mode=b.dataset.mode; document.querySelectorAll('.modebtn').forEach(x=>x.classList.toggle('active',x===b)); render();};
+});
+
+function render(){
+  document.getElementById('cards').style.display = mode==='cards'?'block':'none';
+  document.getElementById('list').style.display  = mode==='list'?'block':'none';
+  document.getElementById('quiz').style.display  = mode==='quiz'?'block':'none';
+  if(mode==='cards') renderCard();
+  if(mode==='list')  renderList();
+  if(mode==='quiz')  newQuiz();
+}
+
+// ---- Cards ----
+const fcard=document.getElementById('fcard');
+fcard.onclick=()=>fcard.classList.toggle('flipped');
+function renderCard(){
+  const arr=DATA[cat]; const it=arr[idx];
+  fcard.classList.remove('flipped');
+  document.getElementById('fFront').textContent=it[0];
+  document.getElementById('fIpa').textContent='['+it[1]+']';
+  document.getElementById('fBack').textContent=it[2];
+  document.getElementById('counter').textContent=`${cat} — Karte ${idx+1} / ${arr.length}`;
+}
+document.getElementById('fSpeak').onclick=(e)=>{e.stopPropagation(); speakText(DATA[cat][idx][0]);};
+document.getElementById('next').onclick=()=>{idx=(idx+1)%DATA[cat].length; renderCard();};
+document.getElementById('prev').onclick=()=>{idx=(idx-1+DATA[cat].length)%DATA[cat].length; renderCard();};
+
+// ---- List ----
+function renderList(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  const body=document.getElementById('listBody'); body.innerHTML='';
+  DATA[cat].filter(it=>it[0].toLowerCase().includes(q)||it[2].toLowerCase().includes(q)).forEach(it=>{
+    const r=document.createElement('div'); r.className='row';
+    r.innerHTML=`<div><div class="en">${it[0]}</div><div class="ipa2">[${it[1]}]</div><div class="de2">${it[2]}</div></div>`;
+    const sp=document.createElement('button'); sp.className='sp'; sp.textContent='🔊';
+    sp.onclick=()=>speakText(it[0]); r.appendChild(sp); body.appendChild(r);
+  });
+}
+document.getElementById('search').oninput=renderList;
+
+// ---- Quiz ----
+let qScore=0, qTotal=0, qAnswer=null;
+function newQuiz(){
+  const arr=DATA[cat];
+  const correct=arr[Math.floor(Math.random()*arr.length)];
+  qAnswer=correct;
+  // 3 wrong options
+  const opts=[correct];
+  while(opts.length<4){ const c=arr[Math.floor(Math.random()*arr.length)]; if(!opts.includes(c)) opts.push(c); }
+  opts.sort(()=>Math.random()-0.5);
+  document.getElementById('quizWord').textContent=correct[0];
+  document.getElementById('quizScore').textContent=`Punkte: ${qScore} / ${qTotal}`;
+  const box=document.getElementById('quizOpts'); box.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button'); b.className='opt'; b.textContent=o[2];
+    b.onclick=()=>checkQuiz(b,o,correct); box.appendChild(b);
+  });
+  document.getElementById('quizNext').style.display='none';
+  speakText(correct[0]);
+}
+function checkQuiz(btn,chosen,correct){
+  qTotal++;
+  document.querySelectorAll('.opt').forEach(b=>{ b.style.pointerEvents='none';
+    if(b.textContent===correct[2]) b.classList.add('correct'); });
+  if(chosen===correct){ qScore++; }
+  else { btn.classList.add('wrong'); }
+  document.getElementById('quizScore').textContent=`Punkte: ${qScore} / ${qTotal}`;
+  document.getElementById('quizNext').style.display='block';
+}
+document.getElementById('quizNext').onclick=newQuiz;
+
+// voices may load late
+if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>{}; }
+render();
+</script>
+</body>
+</html>
